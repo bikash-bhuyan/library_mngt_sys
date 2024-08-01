@@ -1,6 +1,7 @@
 package ai.javis.project.library_management_system.controllers;
 
 import ai.javis.project.library_management_system.payloads.*;
+import ai.javis.project.library_management_system.services.BookInventoryService;
 import ai.javis.project.library_management_system.services.BookService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,8 @@ import java.util.Map;
 public class BookController {
     @Autowired
     private BookService bookService;
+    @Autowired
+    private BookInventoryService bookInventoryService;
     @PostMapping("/add")
     public ResponseEntity<?> addBook(@Valid @RequestBody AddBookRequest addBookRequest){
         try{
@@ -92,6 +95,27 @@ public class BookController {
         }catch (Exception ex){
             ApiResponse apiResponse = new ApiResponse("",ex.getMessage(),false);
             return new ResponseEntity<>(apiResponse,HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PostMapping("/inventory")
+    public ResponseEntity<?> addBookToInventory(@RequestBody AddBookToInventoryRequest addBookToInventoryRequest){
+        try{
+            ApiResponse apiResponse = bookInventoryService.addBookToInventory(addBookToInventoryRequest);
+            return new ResponseEntity<>(apiResponse, HttpStatus.OK);
+        } catch (Exception ex){
+            ApiResponse apiResponse = new ApiResponse("", ex.getMessage(),false);
+            return new ResponseEntity<>(apiResponse, HttpStatus.BAD_REQUEST);
+        }
+    }
+    @DeleteMapping("/inventory/delete/{bookInventoryId}")
+    public ResponseEntity<?> deleteBookFromInventory(@PathVariable(name="bookInventoryId") Integer bookInventoryId){
+        try{
+            ApiResponse apiResponse = bookInventoryService.deleteBookFromInventory(bookInventoryId);
+            return new ResponseEntity<>(apiResponse,HttpStatus.OK);
+        } catch (Exception ex){
+            ApiResponse apiResponse = new ApiResponse("",ex.getMessage(),false);
+            return new ResponseEntity<>(apiResponse, HttpStatus.BAD_REQUEST);
         }
     }
 

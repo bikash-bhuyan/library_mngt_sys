@@ -17,6 +17,6 @@ public interface BookInventoryRepository extends JpaRepository<BookInventory,Int
 
 
     @Query(value = "SELECT * FROM book_inventory " +
-            "WHERE book_id = :bookId AND is_available = true", nativeQuery = true)
+            "WHERE book_id = :bookId AND is_available = true AND status = true", nativeQuery = true)
     BookInventory findFirstAvailableByBookId(Integer bookId);
 }
