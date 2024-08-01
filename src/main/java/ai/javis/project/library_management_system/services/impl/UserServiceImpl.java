@@ -9,11 +9,18 @@ import ai.javis.project.library_management_system.repositories.UserRepository;
 import ai.javis.project.library_management_system.services.UserService;
 import ai.javis.project.library_management_system.utils.CustomMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Calendar;
+import java.util.Date;
+
 @Service
 public class UserServiceImpl implements UserService {
+
+    @Value("${user.prime.member.validity.days}")
+    private Integer membershipDurationInDays;
     @Autowired
     private UserRepository userRepository;
     @Override
@@ -37,6 +44,17 @@ public class UserServiceImpl implements UserService {
         }
         if(updateUserRequest.getEmail() != null){
             user.setEmail(updateUserRequest.getEmail());
+        }
+        if(updateUserRequest.getPrimeMember() != null){
+            if(updateUserRequest.getPrimeMember()){
+                Date today = new Date();
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTime(today);
+                calendar.add(Calendar.DAY_OF_YEAR,membershipDurationInDays);
+                Date membershipExpiryDate = calendar.getTime();
+                user.setPrimeMember(true);
+                user.setPrimeMemberValidity(membershipExpiryDate);
+            }
         }
         user = userRepository.save(user);
         return new ApiResponse("User updated successfully", "", true);

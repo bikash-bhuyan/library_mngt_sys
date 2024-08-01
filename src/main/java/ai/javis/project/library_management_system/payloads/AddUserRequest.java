@@ -23,7 +23,4 @@ public class AddUserRequest {
     @NotBlank(message = "User email cannot be blank")
     @Email(message = "Provide a correct email address")
     private String email;
-    @NotNull(message = "Membership date is mandatory")
-    @PastOrPresent(message = "Membership date must be in the past or present")
-    private Date membershipDate; // required? or we should add internally
 }

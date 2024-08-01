@@ -23,6 +23,9 @@ public class Txn {
     private Book book; // reference to a book
     @ManyToOne
     @JoinColumn
+    private BookInventory bookInventory; // reference to a bookInventory
+    @ManyToOne
+    @JoinColumn
     private User user; // reference to a user
     @Temporal(TemporalType.DATE)
     private Date lendDate;

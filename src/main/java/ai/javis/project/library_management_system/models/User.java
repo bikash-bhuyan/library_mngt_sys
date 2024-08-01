@@ -30,6 +30,9 @@ public class User {
     @Column(name = "membership_date")
     @Temporal(TemporalType.DATE)
     private Date membershipDate;
+    private Boolean primeMember = false;
+    @Temporal(TemporalType.DATE)
+    private Date primeMemberValidity;
     @OneToMany(mappedBy = "user")
     List<Txn> txnList;
 }

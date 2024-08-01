@@ -15,6 +15,7 @@ import java.util.Date;
 public class TxnDto {
     private Integer id;
     private Integer bookId;
+    private Integer unifiedBookId;
     private Integer userId;
     @Temporal(TemporalType.DATE)
     private Date lendDate;

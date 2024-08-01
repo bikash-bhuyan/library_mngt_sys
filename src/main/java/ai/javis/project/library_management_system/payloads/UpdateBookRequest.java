@@ -28,7 +28,6 @@ public class UpdateBookRequest {
     @JsonFormat(pattern = "yyyy-MM-dd", shape = JsonFormat.Shape.STRING)
     private LocalDate publishedDate;
     private List<@NotBlank(message = "Book genre cannot be blank") String> genre;
-    private Boolean isAvailable;
     private Boolean status;
 
     public Boolean isEmpty(){
@@ -36,7 +35,6 @@ public class UpdateBookRequest {
                 && (authorName == null || authorName.trim().isEmpty())
                 && publishedDate == null
                 && (genre == null || genre.isEmpty())
-                && isAvailable == null
                 && status == null
         );
     }

@@ -2,7 +2,9 @@ package ai.javis.project.library_management_system.services.impl;
 
 import ai.javis.project.library_management_system.exceptions.ResourceNotFound;
 import ai.javis.project.library_management_system.models.Book;
+import ai.javis.project.library_management_system.models.BookInventory;
 import ai.javis.project.library_management_system.payloads.*;
+import ai.javis.project.library_management_system.repositories.BookInventoryRepository;
 import ai.javis.project.library_management_system.repositories.BookRepository;
 import ai.javis.project.library_management_system.repositories.TxnRepository;
 import ai.javis.project.library_management_system.services.BookService;
@@ -29,10 +31,17 @@ public class BookServiceImpl implements BookService {
     @Autowired
     private TxnRepository txnRepository;
 
+    @Autowired
+    private BookInventoryRepository bookInventoryRepository;
+
     @Override
+    @Transactional
     public ApiResponse addBook(AddBookRequest addBookRequest) throws Exception{
         Book book = CustomMapper.addBookRequestToBookMapper(addBookRequest);
         book = bookRepository.save(book);
+        BookInventory bookInventory = new BookInventory();
+        bookInventory.setBook(book);
+        bookInventoryRepository.save(bookInventory);
         return new ApiResponse("Book created successfully", "",true);
     }
     @Override
@@ -42,24 +51,24 @@ public class BookServiceImpl implements BookService {
         Book book = bookRepository.findById(bookId)
                 .orElseThrow(() -> new ResourceNotFound("Book", "bookId", bookId));
 
-        if(updateBookRequest.getIsAvailable() != null && !book.getIsAvailable()){
-            return new ApiResponse("", "Can't change the availability or status fields as book is issued by an user and hasn't returned", false);
-        }
-        if(updateBookRequest.getStatus() != null && !book.getIsAvailable()){
-            return new ApiResponse("" , "Can't change the availability or status fields as book is issued by an user and hasn't returned", false);
+        if(updateBookRequest.getStatus() != null){
+            List<Integer> bookIds = new ArrayList<>();
+            bookIds.add(bookId);
+            List<Map<String,Integer>> results = bookInventoryRepository.countByBookIdAndIsAvailableFalse(bookIds);
+            Integer count = results.get(0).get("count");
+            if(!updateBookRequest.getStatus() && count != null && count > 0){
+                return new ApiResponse("" , "Can't change status field as book(s) is(are) issued to user(s)", false);
+            }
         }
 
         if(updateBookRequest.getTitle() != null && !(updateBookRequest.getTitle()).isEmpty()){
-            book.setTitle(updateBookRequest.getTitle());
+            book.setTitle(updateBookRequest.getTitle().trim());
         }
         if(updateBookRequest.getAuthorName() != null && !(updateBookRequest.getAuthorName()).isEmpty()){
-            book.setAuthorName(updateBookRequest.getAuthorName());
+            book.setAuthorName(updateBookRequest.getAuthorName().trim());
         }
         if(updateBookRequest.getStatus() != null){
             book.setStatus(updateBookRequest.getStatus());
-        }
-        if(updateBookRequest.getIsAvailable() != null){
-            book.setIsAvailable(updateBookRequest.getIsAvailable());
         }
         if(updateBookRequest.getPublishedDate() != null){
             book.setPublishedDate(updateBookRequest.getPublishedDate());
@@ -83,9 +92,12 @@ public class BookServiceImpl implements BookService {
     @Transactional
     public Map<Integer, String> deleteBooks(DeleteBookRequest deleteBookRequest) throws Exception{
         Map<Integer, String> failedToDeleteMap = new HashMap<>();
+
         Map<Integer,Book> bookIdToBookMap =  bookRepository.findAllById(deleteBookRequest.getBookIds())
                 .stream()
                 .collect(Collectors.toMap(Book::getId, Function.identity()));
+
+        List<Integer> bookIds = new ArrayList<>();
 
         for (Integer bookId : deleteBookRequest.getBookIds()){
             Book book = bookIdToBookMap.get(bookId);
@@ -93,18 +105,35 @@ public class BookServiceImpl implements BookService {
                 failedToDeleteMap.put(bookId, "Book with bookId : " + bookId + " doesn't exist");
                 continue;
             }
-            if(!book.getIsAvailable() || !book.getStatus()){
+            if(!book.getStatus()){
                 failedToDeleteMap.put(bookId, "Book with bookId : " + bookId + " isn't available");
                 continue;
             }
-            book.setStatus(false);
+            bookIds.add(bookId);
         }
-        bookRepository.saveAll(bookIdToBookMap.values());
+        List<Map<String,Integer>> inventoryStatusFalseCountOfBookIds = bookInventoryRepository.countByBookIdAndIsAvailableFalse(bookIds);
+        List<Book> qualifiedToDeleteBooks = new ArrayList<>();
+        for (Map<String,Integer> result : inventoryStatusFalseCountOfBookIds){
+            Integer bookId = result.get("bookId");
+            Integer count = result.get("count");
+            if(count != null && count.equals(0)){
+                qualifiedToDeleteBooks.add(bookIdToBookMap.get(bookId));
+            }
+            else{
+                failedToDeleteMap.put(bookId,"Book with bookId : " + bookId + " can't be deleted as some copie(s) is(are) issued");
+            }
+        }
+        bookRepository.saveAll(qualifiedToDeleteBooks);
         return failedToDeleteMap;
     }
     @Override
     public BookDto getBookById(Integer bookId) throws Exception{
         Book book = bookRepository.findById(bookId).orElseThrow(() -> new ResourceNotFound("Book", "bookId", bookId));
+
+        if(!book.getStatus()){
+            throw new Exception("Book with bookId : " + book.getId() + " doesn't exist");
+        }
+
         BookDto bookDto  = CustomMapper.bookToBookDtoMapper(book);
 
         List<String> genres = new ArrayList<>(Arrays.asList(book.getGenres().split(",")));

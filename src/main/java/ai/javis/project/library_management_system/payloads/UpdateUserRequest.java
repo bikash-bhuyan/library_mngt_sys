@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Date;
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
@@ -14,11 +16,14 @@ public class UpdateUserRequest {
     private String name;
     @Email(message = "Provide a valid email address")
     private String email;
-
+    private Boolean primeMember;
+    private Date primeMemberValidity;
     public Boolean isEmpty(){
         return (
                 (name == null || name.trim().isEmpty())
                 && (email == null || email.trim().isEmpty())
+                && (primeMember == null)
+                && (primeMemberValidity == null)
         );
     }
 }

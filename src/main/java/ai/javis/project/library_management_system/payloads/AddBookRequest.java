@@ -26,7 +26,4 @@ public class AddBookRequest {
     private LocalDate publishedDate;
     @NotEmpty(message = "At least one book genre must be specified")
     private List<@NotBlank(message = "Book genre cannot be blank") String> genre;
-    @NotNull(message = "Book availability must be specified")
-    private Boolean isAvailable;
-    private Boolean status = true;
 }

@@ -2,12 +2,14 @@ package ai.javis.project.library_management_system.services.impl;
 
 import ai.javis.project.library_management_system.exceptions.ResourceNotFound;
 import ai.javis.project.library_management_system.models.Book;
+import ai.javis.project.library_management_system.models.BookInventory;
 import ai.javis.project.library_management_system.models.Txn;
 import ai.javis.project.library_management_system.models.User;
 import ai.javis.project.library_management_system.payloads.ApiResponse;
 import ai.javis.project.library_management_system.payloads.LendBookRequest;
 import ai.javis.project.library_management_system.payloads.ReturnBookRequest;
 import ai.javis.project.library_management_system.payloads.TxnDto;
+import ai.javis.project.library_management_system.repositories.BookInventoryRepository;
 import ai.javis.project.library_management_system.repositories.BookRepository;
 import ai.javis.project.library_management_system.repositories.TxnRepository;
 import ai.javis.project.library_management_system.repositories.UserRepository;
@@ -27,9 +29,11 @@ public class TxnServiceImpl implements TxnService {
     private UserRepository userRepository;
     @Autowired
     private BookRepository bookRepository;
-
     @Autowired
     private TxnRepository txnRepository;
+
+    @Autowired
+    private BookInventoryRepository bookInventoryRepository;
 
     @Override
     @Transactional
@@ -39,17 +43,22 @@ public class TxnServiceImpl implements TxnService {
         Book book = bookRepository.findById(lendBookRequest.getBookId())
                 .orElseThrow(() -> new ResourceNotFound("Book", "bookId", lendBookRequest.getBookId()));
 
-        if(!book.getIsAvailable()){
-            return new ApiResponse("", "Book isn't available to lend", false);
-        }
-        else if(!book.getStatus()){
+        if(!book.getStatus()){
             return new ApiResponse("", "Book doesn't exist in the library", false);
         }
 
-        book.setIsAvailable(false);
-        book = bookRepository.save(book);
+        BookInventory bookInventory = bookInventoryRepository.findFirstAvailableByBookId(book.getId());
+        if(bookInventory == null){
+            return new ApiResponse("", "No Book available to lend in the library", false);
+        }
+
+        bookInventory.setIsAvailable(false);
+
+        bookInventory = bookInventoryRepository.save(bookInventory);
+
         Txn txn = new Txn();
         txn.setBook(book);
+        txn.setBookInventory(bookInventory);
         txn.setUser(user);
 
         Date today = new Date();
@@ -71,21 +80,27 @@ public class TxnServiceImpl implements TxnService {
     public ApiResponse returnBook(ReturnBookRequest returnBookRequest) throws Exception{
         User user = userRepository.findById(returnBookRequest.getUserId())
                 .orElseThrow(() -> new ResourceNotFound("User", "userId", returnBookRequest.getUserId()));
-        Book book = bookRepository.findById(returnBookRequest.getBookId())
-                .orElseThrow(() -> new ResourceNotFound("Book", "bookId", returnBookRequest.getBookId()));
+        BookInventory bookInventory = bookInventoryRepository.findById(returnBookRequest.getBookInventoryId())
+                .orElseThrow(() -> new ResourceNotFound("Book with", "unified bookId", returnBookRequest.getBookInventoryId()));
 
-        if(book.getIsAvailable()){
+        BookInventory finalBookInventory = bookInventory;
+        Book book = bookRepository.findById(bookInventory.getBook().getId())
+                .orElseThrow(() -> new ResourceNotFound("Book", "bookId", finalBookInventory.getBook().getId()));
+
+        if(bookInventory.getIsAvailable()){
             return new ApiResponse("", "Book hasn't been issued from the library", false);
         }
-        else if(!book.getStatus()){
+
+        if(!book.getStatus()){
             return new ApiResponse("", "Book doesn't exist in the library", false);
         }
-        Txn txn = txnRepository.findByBookIdAndUserIdAndStatusTrue(returnBookRequest.getBookId(),
-                returnBookRequest.getUserId()).orElseThrow(() -> new ResourceNotFound("Transaction", "bookId : " + returnBookRequest.getBookId()
+
+        Txn txn = txnRepository.findByBookInventoryIdAndUserIdAndStatusTrue(returnBookRequest.getBookInventoryId(),
+                returnBookRequest.getUserId()).orElseThrow(() -> new ResourceNotFound("Transaction", "unified bookId : " + returnBookRequest.getBookInventoryId()
                 + " userId ", returnBookRequest.getUserId()));
 
-        book.setIsAvailable(true);
-        book = bookRepository.save(book);
+        bookInventory.setIsAvailable(true);
+        bookInventory = bookInventoryRepository.save(bookInventory);
 
         txn.setStatus(false);
         Date returnDate = new Date();

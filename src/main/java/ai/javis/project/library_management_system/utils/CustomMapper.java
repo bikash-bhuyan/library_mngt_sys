@@ -5,6 +5,7 @@ import ai.javis.project.library_management_system.models.Txn;
 import ai.javis.project.library_management_system.models.User;
 import ai.javis.project.library_management_system.payloads.*;
 
+import java.util.Date;
 import java.util.stream.Collectors;
 
 public class CustomMapper {
@@ -13,8 +14,6 @@ public class CustomMapper {
         book.setTitle(addBookRequest.getTitle());
         book.setAuthorName(addBookRequest.getAuthorName());
         book.setPublishedDate(addBookRequest.getPublishedDate());
-        book.setIsAvailable(addBookRequest.getIsAvailable());
-        book.setStatus(addBookRequest.getStatus());
         String genres = addBookRequest.getGenre()
                 .stream()
                 .map(String::trim)
@@ -32,7 +31,6 @@ public class CustomMapper {
         bookDto.setTitle(book.getTitle());
         bookDto.setAuthorName(book.getAuthorName());
         bookDto.setPublishedDate(book.getPublishedDate());
-        bookDto.setIsAvailable(book.getIsAvailable());
         bookDto.setStatus(book.getStatus());
         return bookDto;
     }
@@ -42,20 +40,20 @@ public class CustomMapper {
         getBooksResponse.setTitle(book.getTitle());
         getBooksResponse.setAuthorName(book.getAuthorName());
         getBooksResponse.setPublishedDate(book.getPublishedDate());
-        getBooksResponse.setIsAvailable(book.getIsAvailable());
         return getBooksResponse;
     }
     public static User addUserRequestToUserMapper(AddUserRequest addUserRequest){
         User user = new User();
         user.setName(addUserRequest.getName());
         user.setEmail(addUserRequest.getEmail());
-        user.setMembershipDate(addUserRequest.getMembershipDate());
+        user.setMembershipDate(new Date());
         return user;
     }
     public static TxnDto txnToTxnDtoMapper(Txn txn){
         TxnDto txnDto = new TxnDto();
         txnDto.setId(txn.getId());
         txnDto.setBookId(txn.getBook().getId());
+        txnDto.setUnifiedBookId(txn.getBookInventory().getId());
         txnDto.setUserId(txn.getUser().getId());
         txnDto.setLendDate(txn.getLendDate());
         txnDto.setDueDate(txn.getDueDate());

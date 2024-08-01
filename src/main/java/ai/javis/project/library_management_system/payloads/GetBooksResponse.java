@@ -18,5 +18,4 @@ public class GetBooksResponse {
     private String authorName;
     private LocalDate publishedDate;
     private List<String> genre;
-    private Boolean isAvailable;
 }

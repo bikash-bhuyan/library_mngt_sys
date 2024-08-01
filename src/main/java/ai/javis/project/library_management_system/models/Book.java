@@ -31,9 +31,9 @@ public class Book {
     @Temporal(TemporalType.DATE)
     private LocalDate publishedDate;
     private String genres;
-    @Column(name = "is_available")
-    private Boolean isAvailable;
     private Boolean status = true;
     @OneToMany(mappedBy = "book")
     List<Txn> txnList;
+    @OneToMany(mappedBy = "book")
+    List<BookInventory> booksList;
 }

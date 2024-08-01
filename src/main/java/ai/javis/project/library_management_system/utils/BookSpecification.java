@@ -25,6 +25,7 @@ public class BookSpecification {
                 }
                 predicates.add(genrePredicate);
             }
+            predicates.add(criteriaBuilder.isTrue(root.get("status")));
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
         };
     }
