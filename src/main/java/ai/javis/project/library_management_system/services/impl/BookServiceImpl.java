@@ -52,11 +52,8 @@ public class BookServiceImpl implements BookService {
                 .orElseThrow(() -> new ResourceNotFound("Book", "bookId", bookId));
 
         if(updateBookRequest.getStatus() != null){
-            List<Integer> bookIds = new ArrayList<>();
-            bookIds.add(bookId);
-            List<Map<String,Integer>> results = bookInventoryRepository.countByBookIdAndIsAvailableFalse(bookIds);
-            Integer count = results.get(0).get("count");
-            if(!updateBookRequest.getStatus() && count != null && count > 0){
+            Integer count = bookInventoryRepository.countByBookIdAndIsAvailableFalse(bookId);
+            if(!updateBookRequest.getStatus() && (count != null && count > 0)){
                 return new ApiResponse("" , "Can't change status field as book(s) is(are) issued to user(s)", false);
             }
         }
@@ -111,16 +108,24 @@ public class BookServiceImpl implements BookService {
             }
             bookIds.add(bookId);
         }
-        List<Map<String,Integer>> inventoryStatusFalseCountOfBookIds = bookInventoryRepository.countByBookIdAndIsAvailableFalse(bookIds);
+
+        Map<Integer,Integer> inventoryStatusFalseCountOfBookIds = new HashMap<>();
+        for(Integer bookId : bookIds){
+             inventoryStatusFalseCountOfBookIds.put(bookId,bookInventoryRepository.countByBookIdAndIsAvailableFalse(bookId));
+        }
+
+
         List<Book> qualifiedToDeleteBooks = new ArrayList<>();
-        for (Map<String,Integer> result : inventoryStatusFalseCountOfBookIds){
-            Integer bookId = result.get("bookId");
-            Integer count = result.get("count");
-            if(count != null && count.equals(0)){
-                qualifiedToDeleteBooks.add(bookIdToBookMap.get(bookId));
+        for (Map.Entry<Integer,Integer> result : inventoryStatusFalseCountOfBookIds.entrySet()){
+            Integer bookId = result.getKey();
+            Integer count = result.getValue();
+            if(count == null || count.equals(0)){
+                Book updatedBook = bookIdToBookMap.get(bookId);
+                updatedBook.setStatus(false);
+                qualifiedToDeleteBooks.add(updatedBook);
             }
             else{
-                failedToDeleteMap.put(bookId,"Book with bookId : " + bookId + " can't be deleted as some copie(s) is(are) issued");
+                failedToDeleteMap.put(bookId,"Book with bookId : " + bookId + " can't be deleted as some copy/copies is/are issued");
             }
         }
         bookRepository.saveAll(qualifiedToDeleteBooks);

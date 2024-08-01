@@ -8,12 +8,12 @@ import java.util.List;
 import java.util.Map;
 
 public interface BookInventoryRepository extends JpaRepository<BookInventory,Integer> {
-    @Query(value = "SELECT book_id, COUNT(book_id) AS count" +
+    @Query(value = "SELECT COUNT(book_id) AS count " +
             "FROM book_inventory " +
-            "WHERE book_id IN :bookIds" +
-            "AND is_available = false" +
+            "WHERE book_id = :bookId " +
+            "AND is_available = false " +
             "GROUP BY book_id", nativeQuery = true)
-    List<Map<String,Integer>> countByBookIdAndIsAvailableFalse(List<Integer> bookIds);
+    Integer countByBookIdAndIsAvailableFalse(Integer bookId);
 
 
     @Query(value = "SELECT * FROM book_inventory " +
