@@ -6,7 +6,10 @@ import lombok.*;
 @NoArgsConstructor
 @Data
 public class ApiResponse {
+
     private String successMessage;
+
     private String errorMessage;
+
     private Boolean success;
 }

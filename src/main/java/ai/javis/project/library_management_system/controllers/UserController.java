@@ -1,5 +1,6 @@
 package ai.javis.project.library_management_system.controllers;
 
+import ai.javis.project.library_management_system.enums.ResponseMessages;
 import ai.javis.project.library_management_system.payloads.AddUserRequest;
 import ai.javis.project.library_management_system.payloads.ApiResponse;
 import ai.javis.project.library_management_system.payloads.UpdateUserRequest;
@@ -17,13 +18,17 @@ public class UserController {
     private UserService userService;
     @PostMapping("/add")
     public ResponseEntity<ApiResponse> addUser(@Valid @RequestBody AddUserRequest addUserRequest){
+
         try{
             ApiResponse response = userService.addUser(addUserRequest);
+
             if(!response.getSuccess()){
                 return new ResponseEntity<>(response, HttpStatus.CONFLICT);
             }
+
             return new ResponseEntity<>(response, HttpStatus.CREATED);
         } catch (Exception ex){
+
             ApiResponse apiResponse = new ApiResponse("", ex.getMessage(), false);
             return new ResponseEntity<>(apiResponse,HttpStatus.BAD_REQUEST);
         }
@@ -32,17 +37,20 @@ public class UserController {
     public ResponseEntity<?> updateUser(@Valid @RequestBody UpdateUserRequest updateUserRequest, @PathVariable(name="userId") Integer userId){
 
         if(updateUserRequest.isEmpty()){
-            ApiResponse apiResponse = new ApiResponse("","At least one field need to be provided", false);
+            ApiResponse apiResponse = new ApiResponse("", ResponseMessages.ATLEAST_PROVIDE_ONE_FIELD.getValue(), false);
             return new ResponseEntity<>(apiResponse, HttpStatus.BAD_REQUEST);
         }
+
         if(updateUserRequest.getName() != null && updateUserRequest.getName().trim().isEmpty()){
-            ApiResponse apiResponse = new ApiResponse("","User name cannot be blank", false);
+            ApiResponse apiResponse = new ApiResponse("",ResponseMessages.USER_NAME_CANNOT_BE_BLANK.getValue(), false);
             return new ResponseEntity<>(apiResponse,HttpStatus.BAD_REQUEST);
         }
+
         if(updateUserRequest.getEmail() != null && updateUserRequest.getEmail().trim().isEmpty()){
-            ApiResponse apiResponse = new ApiResponse("","User email address cannot be blank", false);
+            ApiResponse apiResponse = new ApiResponse("",ResponseMessages.USER_EMAIL_CANNOT_BE_BLANK.getValue(), false);
             return new ResponseEntity<>(apiResponse,HttpStatus.BAD_REQUEST);
         }
+
         try{
             ApiResponse response = userService.updateUser(updateUserRequest,userId);
             return new ResponseEntity<>(response, HttpStatus.OK);

@@ -8,9 +8,11 @@ import lombok.*;
 @AllArgsConstructor
 @Data
 public class ReturnBookRequest {
+
     @NotNull(message = "Unified book id is mandatory")
     @Positive(message = "Unified book id isn't valid")
     private Integer bookInventoryId;
+
     @NotNull(message = "User id is mandatory")
     @Positive(message = "User id isn't valid")
     private Integer userId;

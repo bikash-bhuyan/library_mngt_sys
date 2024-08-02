@@ -10,10 +10,16 @@ import java.util.List;
 @NoArgsConstructor
 @Data
 public class BookDto {
+
     private Integer bookId;
+
     private String title;
+
     private String authorName;
+
     private LocalDate publishedDate;
+
     private List<String> genre;
+
     private Boolean status;
 }

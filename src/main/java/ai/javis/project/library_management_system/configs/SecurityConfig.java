@@ -16,8 +16,11 @@ public class SecurityConfig {
     private CustomAuthenticationFilter customAuthenticationFilter;
     @Bean
     public FilterRegistrationBean<CustomAuthenticationFilter> customAuthicationFilter(){
+
         FilterRegistrationBean<CustomAuthenticationFilter> registrationBean = new FilterRegistrationBean<>();
+
         registrationBean.setFilter(customAuthenticationFilter);
+
         registrationBean.addUrlPatterns(
                 "/books/add/*",
                 "/books/update/*",
@@ -28,6 +31,7 @@ public class SecurityConfig {
                 "/lend/get",
                 "/books/inventory/*"
         );
+
         return registrationBean;
     }
 }

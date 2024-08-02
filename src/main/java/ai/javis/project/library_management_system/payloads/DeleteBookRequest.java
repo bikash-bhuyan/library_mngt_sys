@@ -15,6 +15,8 @@ import java.util.List;
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true) // LOOK INTO THIS
 public class DeleteBookRequest {
+
     @NotEmpty(message = "At least one book id must be specified")
     private List< @Positive(message = "Book id is invalid") Integer> bookIds;
+
 }

@@ -19,15 +19,20 @@ import java.util.Map;
 public class GlobalException {
     @ExceptionHandler(value={ResourceNotFound.class})
     public ResponseEntity<?> resourceNotFoundExceptionHandler(ResourceNotFound ex){
+
         String message = ex.getMessage();
         return new ResponseEntity<>(message, HttpStatus.NOT_FOUND);
     }
+
     @ExceptionHandler(value = {NullPointerException.class})
     public ResponseEntity<?> nullPointerExceptionHandler(NullPointerException ex){
+
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
+
     @ExceptionHandler(value = {MethodArgumentNotValidException.class})
     public ResponseEntity<?> methodArgumentNotValidExceptionHandler(MethodArgumentNotValidException ex){
+
         Map<String, String> errorResponse = new HashMap<>();
         ex.getBindingResult().getAllErrors().forEach((error) -> {
             String fieldName = ((FieldError) error).getField();
@@ -37,38 +42,50 @@ public class GlobalException {
 
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
+
     @ExceptionHandler(value = {SQLIntegrityConstraintViolationException.class})
     public ResponseEntity<?> sqlIntegrityConstraintViolationExceptionHandler(SQLIntegrityConstraintViolationException ex){
+
         Map<String,String> errorResponse = new HashMap<>();
         errorResponse.put("message", ex.getMessage());
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
+
     @ExceptionHandler(value = {HttpMessageNotReadableException.class})
     public ResponseEntity<?> httpMessageNotReadableExceptionHandler(HttpMessageNotReadableException ex){
+
         Map<String,String> errorResponse = new HashMap<>();
         errorResponse.put("message", ex.getMessage());
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
+
     @ExceptionHandler(value = {MethodArgumentTypeMismatchException.class})
     public ResponseEntity<?> methodArgumentTypeMismatchExceptionHandler(MethodArgumentTypeMismatchException ex){
+
         Map<String,String> errorResponse = new HashMap<>();
         errorResponse.put("message", ex.getMessage());
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
+
     @ExceptionHandler(value = {SQLException.class})
     public ResponseEntity<?> dataIntegrityViolationExceptionHandler(SQLException ex){
+
         Map<String,String> errorResponse = new HashMap<>();
         errorResponse.put("message", ex.getMessage());
         return new ResponseEntity<>(errorResponse,HttpStatus.BAD_REQUEST);
     }
+
     @ExceptionHandler(value = {IOException.class})
     public ResponseEntity<?> ioExceptionHandler(IOException ex){
+
         Map<String,String> errorResponse = new HashMap<>();
         errorResponse.put("message", ex.getMessage());
         return new ResponseEntity<>(errorResponse,HttpStatus.BAD_REQUEST);
     }
+
     @ExceptionHandler(value = {ServletException.class})
     public ResponseEntity<?> servletExceptionHandler(ServletException ex){
+
         Map<String,String> errorResponse = new HashMap<>();
         errorResponse.put("message", ex.getMessage());
         return new ResponseEntity<>(errorResponse,HttpStatus.BAD_REQUEST);

@@ -12,8 +12,7 @@ public interface BookInventoryRepository extends JpaRepository<BookInventory,Int
             "GROUP BY book_id", nativeQuery = true)
     Integer countByBookIdAndIsAvailableFalse(Integer bookId);
 
-
     @Query(value = "SELECT * FROM book_inventory " +
-            "WHERE book_id = :bookId AND is_available = true AND status = true", nativeQuery = true)
+            "WHERE book_id = :bookId AND is_available = true AND status = true LIMIT 1", nativeQuery = true)
     BookInventory findFirstAvailableByBookId(Integer bookId);
 }

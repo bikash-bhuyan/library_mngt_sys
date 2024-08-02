@@ -16,21 +16,23 @@ import java.util.List;
 @NoArgsConstructor
 @Data
 public class UpdateBookRequest {
+
     private String title;
 
     private String authorName;
 
     @PastOrPresent(message = "Book publish date must be in the past or present")
-//    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    @JsonDeserialize(using = LocalDateDeserializer.class)
     @JsonFormat(pattern = "yyyy-MM-dd", shape = JsonFormat.Shape.STRING)
-
     private LocalDate publishedDate;
+
     private List<@NotBlank(message = "Book genre cannot be blank") String> genre;
+
     private Boolean status;
 
     public Boolean isEmpty(){
-        return ((title == null || title.trim().isEmpty())
+
+        return (
+                (title == null || title.trim().isEmpty())
                 && (authorName == null || authorName.trim().isEmpty())
                 && publishedDate == null
                 && (genre == null || genre.isEmpty())

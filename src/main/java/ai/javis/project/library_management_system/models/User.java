@@ -18,17 +18,24 @@ import java.util.List;
         @UniqueConstraint(columnNames = {"email"})
 })
 public class User {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+
     private String name;
+
     private String email;
+
     @Column(name = "membership_date")
     @Temporal(TemporalType.DATE)
     private Date membershipDate;
+
     private Boolean primeMember = false;
+
     @Temporal(TemporalType.DATE)
     private Date primeMemberValidity;
+
     @OneToMany(mappedBy = "user")
     List<Txn> txnList;
 }
