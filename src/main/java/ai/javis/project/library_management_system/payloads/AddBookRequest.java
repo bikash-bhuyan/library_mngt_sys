@@ -14,6 +14,7 @@ import java.util.List;
 @NoArgsConstructor
 @Data
 public class AddBookRequest {
+
     @NotNull(message = "Book title is mandatory")
     @NotBlank(message = "Book title cannot be blank")
     private String title;

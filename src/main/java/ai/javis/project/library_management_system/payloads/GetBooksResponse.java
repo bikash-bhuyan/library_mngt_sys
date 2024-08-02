@@ -10,8 +10,12 @@ import java.util.List;
 @NoArgsConstructor
 @Data
 public class GetBooksResponse {
+
     private String title;
+
     private String authorName;
+
     private LocalDate publishedDate;
+
     private List<String> genre;
 }

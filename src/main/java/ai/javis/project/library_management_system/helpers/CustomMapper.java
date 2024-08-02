@@ -10,10 +10,13 @@ import java.util.stream.Collectors;
 
 public class CustomMapper {
     public static Book addBookRequestToBookMapper(AddBookRequest addBookRequest){
+
         Book book = new Book();
+
         book.setTitle(addBookRequest.getTitle());
         book.setAuthorName(addBookRequest.getAuthorName());
         book.setPublishedDate(addBookRequest.getPublishedDate());
+
         String genres = addBookRequest.getGenre()
                 .stream()
                 .map(String::trim)
@@ -25,16 +28,21 @@ public class CustomMapper {
         book.setGenres(genres);
         return book;
     }
+
     public static BookDto bookToBookDtoMapper(Book book){
+
         BookDto bookDto = new BookDto();
         bookDto.setBookId(book.getId());
         bookDto.setTitle(book.getTitle());
         bookDto.setAuthorName(book.getAuthorName());
         bookDto.setPublishedDate(book.getPublishedDate());
         bookDto.setStatus(book.getStatus());
+
         return bookDto;
     }
+
     public static GetBooksResponse bookToGetBookResponseMapper(Book book){
+
         GetBooksResponse getBooksResponse = new GetBooksResponse();
 
         getBooksResponse.setTitle(book.getTitle());
@@ -42,14 +50,18 @@ public class CustomMapper {
         getBooksResponse.setPublishedDate(book.getPublishedDate());
         return getBooksResponse;
     }
+
     public static User addUserRequestToUserMapper(AddUserRequest addUserRequest){
+
         User user = new User();
         user.setName(addUserRequest.getName());
         user.setEmail(addUserRequest.getEmail());
         user.setMembershipDate(new Date());
         return user;
     }
+
     public static TxnDto txnToTxnDtoMapper(Txn txn){
+
         TxnDto txnDto = new TxnDto();
         txnDto.setId(txn.getId());
         txnDto.setBookId(txn.getBook().getId());

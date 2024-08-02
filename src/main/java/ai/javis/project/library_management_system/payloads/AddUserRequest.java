@@ -12,9 +12,11 @@ import java.util.Date;
 @AllArgsConstructor
 @Data
 public class AddUserRequest {
+
     @NotNull(message = "User name is mandatory")
     @NotBlank(message = "User name cannot be blank")
     private String name;
+
     @NotNull(message = "User email is mandatory")
     @NotBlank(message = "User email cannot be blank")
     @Email(message = "Provide a correct email address")

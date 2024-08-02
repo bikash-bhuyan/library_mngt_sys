@@ -1,5 +1,6 @@
 package ai.javis.project.library_management_system.services;
 
+import ai.javis.project.library_management_system.enums.ResponseMessages;
 import ai.javis.project.library_management_system.exceptions.ResourceNotFound;
 import ai.javis.project.library_management_system.models.User;
 import ai.javis.project.library_management_system.payloads.AddUserRequest;
@@ -18,35 +19,39 @@ import java.util.Date;
 @Service
 public class UserService {
 
-    @Value("${user.prime.member.validity.days}")
+    @Value("${user.prime_member.validity_in_days}")
     private Integer membershipDurationInDays;
+
     @Autowired
     private UserRepository userRepository;
-    @Transactional
+
     public ApiResponse addUser(AddUserRequest addUserRequest) throws Exception{
         User user = userRepository.findByEmail(addUserRequest.getEmail());
+
         if(user != null){
-            return new ApiResponse("", "User already exists", false);
+            return new ApiResponse("", ResponseMessages.USER_ALREADY_EXISTS.getValue(), false);
         }
         User newUser = CustomMapper.addUserRequestToUserMapper(addUserRequest);
         newUser = userRepository.save(newUser);
-        return new ApiResponse("User created successfully", "",true);
+        return new ApiResponse(ResponseMessages.USER_CREATED_SUCCESSFULLY.getValue(), "",true);
     }
 
 
-    @Transactional
     public ApiResponse updateUser(UpdateUserRequest updateUserRequest, Integer userId) throws Exception{
         User user = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFound("User", "userId", userId));
+
         if(updateUserRequest.getName() != null){
             user.setName(updateUserRequest.getName());
         }
+
         if(updateUserRequest.getEmail() != null){
             user.setEmail(updateUserRequest.getEmail());
         }
+
         if(updateUserRequest.getPrimeMember() != null){
             if(updateUserRequest.getPrimeMember()){
                 if(user.getPrimeMember()){
-                    return new ApiResponse("", "User is already registered as prime member till "+ user.getPrimeMemberValidity(), false);
+                    return new ApiResponse("", ResponseMessages.USER_ALREADY_REGISTERED_AS_PRIME_MEMBER.getValue() + " till " + user.getPrimeMemberValidity(), false);
                 }
                 Date today = new Date();
                 Calendar calendar = Calendar.getInstance();
@@ -61,6 +66,6 @@ public class UserService {
             }
         }
         user = userRepository.save(user);
-        return new ApiResponse("User updated successfully", "", true);
+        return new ApiResponse(ResponseMessages.USER_UPDATED_SUCCESSFULLY.getValue(), "", true);
     }
 }

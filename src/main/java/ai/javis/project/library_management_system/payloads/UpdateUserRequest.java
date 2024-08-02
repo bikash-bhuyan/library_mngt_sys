@@ -9,11 +9,16 @@ import java.util.Date;
 @AllArgsConstructor
 @Data
 public class UpdateUserRequest {
+
     private String name;
+
     @Email(message = "Provide a valid email address")
     private String email;
+
     private Boolean primeMember;
+
     private Date primeMemberValidity;
+
     public Boolean isEmpty(){
         return (
                 (name == null || name.trim().isEmpty())
