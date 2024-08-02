@@ -6,8 +6,7 @@ import lombok.*;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
-@Setter
+@Data
 public class AddBookToInventoryRequest {
     @NotNull(message = "book id must be provided")
     @Positive(message = "book id must be positive")

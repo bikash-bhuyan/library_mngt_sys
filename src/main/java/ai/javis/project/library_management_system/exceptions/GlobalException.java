@@ -1,11 +1,8 @@
 package ai.javis.project.library_management_system.exceptions;
-import ai.javis.project.library_management_system.payloads.ApiResponse;
 import jakarta.servlet.ServletException;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
-import org.springframework.transaction.UnexpectedRollbackException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;

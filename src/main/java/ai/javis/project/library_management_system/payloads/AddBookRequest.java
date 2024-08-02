@@ -12,18 +12,20 @@ import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
-@Setter
+@Data
 public class AddBookRequest {
     @NotNull(message = "Book title is mandatory")
     @NotBlank(message = "Book title cannot be blank")
     private String title;
+
     @NotNull(message = "Author is mandatory")
     @NotBlank(message = "Author name cannot be blank")
     private String authorName;
+
     @NotNull(message = "Book published date is mandatory")
     @PastOrPresent(message = "Book publish date must be in the past or present")
     private LocalDate publishedDate;
+
     @NotEmpty(message = "At least one book genre must be specified")
     private List<@NotBlank(message = "Book genre cannot be blank") String> genre;
 }

@@ -1,11 +1,7 @@
 package ai.javis.project.library_management_system.exceptions;
 
-import lombok.Getter;
-import lombok.Setter;
-
-@Getter
-@Setter
-
+import lombok.Data;
+@Data
 public class ResourceNotFound extends RuntimeException{
     private String resourceName;
     private String fieldName;

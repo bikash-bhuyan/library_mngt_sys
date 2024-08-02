@@ -2,15 +2,11 @@ package ai.javis.project.library_management_system.payloads;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
-@Setter
+@Data
 public class ReturnBookRequest {
     @NotNull(message = "Unified book id is mandatory")
     @Positive(message = "Unified book id isn't valid")

@@ -1,6 +1,5 @@
 package ai.javis.project.library_management_system.controllers;
 
-import ai.javis.project.library_management_system.models.Txn;
 import ai.javis.project.library_management_system.payloads.ApiResponse;
 import ai.javis.project.library_management_system.payloads.LendBookRequest;
 import ai.javis.project.library_management_system.payloads.ReturnBookRequest;

@@ -1,17 +1,13 @@
 package ai.javis.project.library_management_system.payloads;
 
 import jakarta.validation.constraints.Email;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.Date;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
-@Setter
+@Data
 public class UpdateUserRequest {
     private String name;
     @Email(message = "Provide a valid email address")

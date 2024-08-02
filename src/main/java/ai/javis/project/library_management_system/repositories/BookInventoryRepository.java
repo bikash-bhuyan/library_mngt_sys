@@ -4,9 +4,6 @@ import ai.javis.project.library_management_system.models.BookInventory;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
-import java.util.List;
-import java.util.Map;
-
 public interface BookInventoryRepository extends JpaRepository<BookInventory,Integer> {
     @Query(value = "SELECT COUNT(book_id) AS count " +
             "FROM book_inventory " +

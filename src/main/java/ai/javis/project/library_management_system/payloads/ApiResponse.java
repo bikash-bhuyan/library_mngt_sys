@@ -1,14 +1,10 @@
 package ai.javis.project.library_management_system.payloads;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
-@Setter
+@Data
 public class ApiResponse {
     private String successMessage;
     private String errorMessage;

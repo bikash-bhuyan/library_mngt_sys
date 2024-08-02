@@ -1,10 +1,7 @@
 package ai.javis.project.library_management_system.models;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.springframework.cglib.core.Local;
 
@@ -14,8 +11,7 @@ import java.util.List;
 import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
-@Setter
+@Data
 @Entity
 @Table(name="books" , uniqueConstraints = {
         @UniqueConstraint(columnNames = {"title", "author_name"})
@@ -24,6 +20,7 @@ public class Book {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+
     private String title;
     @Column(name = "author_name")
     private String authorName;
