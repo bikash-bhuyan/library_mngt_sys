@@ -4,6 +4,7 @@ import ai.javis.project.library_management_system.enums.ResponseMessages;
 import ai.javis.project.library_management_system.payloads.AddUserRequest;
 import ai.javis.project.library_management_system.payloads.ApiResponse;
 import ai.javis.project.library_management_system.payloads.UpdateUserRequest;
+import ai.javis.project.library_management_system.services.ReminderService;
 import ai.javis.project.library_management_system.services.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,9 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private ReminderService reminderService;
     @PostMapping("/add")
     public ResponseEntity<ApiResponse> addUser(@Valid @RequestBody AddUserRequest addUserRequest){
 
@@ -59,5 +63,9 @@ public class UserController {
             return new ResponseEntity<>(apiResponse, HttpStatus.BAD_REQUEST);
         }
     }
+//    @GetMapping("/user/schedule")
+//    public void userSchedule(){
+//        reminderService.sendReminders();
+//    }
 
 }
