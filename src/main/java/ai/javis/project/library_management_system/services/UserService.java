@@ -45,6 +45,9 @@ public class UserService {
         }
         if(updateUserRequest.getPrimeMember() != null){
             if(updateUserRequest.getPrimeMember()){
+                if(user.getPrimeMember()){
+                    return new ApiResponse("", "User is already registered as prime member till "+ user.getPrimeMemberValidity(), false);
+                }
                 Date today = new Date();
                 Calendar calendar = Calendar.getInstance();
                 calendar.setTime(today);
@@ -52,6 +55,9 @@ public class UserService {
                 Date membershipExpiryDate = calendar.getTime();
                 user.setPrimeMember(true);
                 user.setPrimeMemberValidity(membershipExpiryDate);
+            } else{
+                user.setPrimeMember(false);
+                user.setPrimeMemberValidity(null);
             }
         }
         user = userRepository.save(user);

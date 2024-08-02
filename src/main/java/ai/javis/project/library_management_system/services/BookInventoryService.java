@@ -58,6 +58,6 @@ public class BookInventoryService {
         bookInventory.setStatus(false);
         bookInventory = bookInventoryRepository.save(bookInventory);
 
-        return new ApiResponse("Book with bookInventoryId" + bookInventoryId + "deleted successfully", "", true);
+        return new ApiResponse("Book with bookInventoryId " + bookInventoryId + " deleted successfully", "", true);
     }
 }

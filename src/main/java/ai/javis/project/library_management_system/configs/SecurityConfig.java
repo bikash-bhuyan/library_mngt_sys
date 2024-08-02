@@ -25,7 +25,8 @@ public class SecurityConfig {
                 "/books/lend/*",
                 "/books/return/*",
                 "/user/update/*",
-                "/lend/get"
+                "/lend/get",
+                "/books/inventory/*"
         );
         return registrationBean;
     }

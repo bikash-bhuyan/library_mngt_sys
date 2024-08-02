@@ -98,7 +98,7 @@ public class BookController {
         }
     }
 
-    @PostMapping("/inventory")
+    @PostMapping("/inventory/add")
     public ResponseEntity<?> addBookToInventory(@RequestBody AddBookToInventoryRequest addBookToInventoryRequest){
         try{
             ApiResponse apiResponse = bookInventoryService.addBookToInventory(addBookToInventoryRequest);
