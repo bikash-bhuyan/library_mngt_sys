@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @Service
 public class ReminderService {
@@ -41,11 +42,11 @@ public class ReminderService {
         }
     }
 
-    @Scheduled(cron = "0 29 22 * * ?") // sec min hr dayofMonth month dayOfWeek
-    public void sendReminders() {
+    @Scheduled(cron = "0 30 19 * * ?") // sec min hr dayofMonth month dayOfWeek
+    public void sendBookReturnReminders() {
         try{
             LocalDate tomorrow = LocalDate.now().plusDays(1);
-            List<User> usersWithDueBooks = userRepository.findUsersWithBooksDueOn(tomorrow);
+            Set<User> usersWithDueBooks = userRepository.findUsersWithBooksDueOn(tomorrow);
 
             for (User user : usersWithDueBooks) {
                 String subject = "Reminder: Book Due Tomorrow";
@@ -53,7 +54,23 @@ public class ReminderService {
                 sendReminderEmail(user.getEmail(), subject, text);
             }
         } catch (Exception ex){
-            logger.error("sendReminders: " + ex.getMessage());
+            logger.error("sendBookReturnReminders: " + ex.getMessage());
+        }
+    }
+
+    @Scheduled(cron = "0 0 11 * * ?")
+    public void sendBookOverDueReminders(){
+        try{
+            LocalDate today = LocalDate.now();
+            Set<User> usersWithOverDueBooks = userRepository.findUsersWithOverDueBooksTill(today);
+
+            for (User user : usersWithOverDueBooks){
+                String subject = "Reminder: Book Overdue";
+                String text = "Dear " + user.getName() + ",\n\nYour borrowed book is overdue. Please return it on time to avoid extra fines.\n\nThank you!";
+                sendReminderEmail(user.getEmail(),subject,text);
+            }
+        } catch(Exception ex){
+            logger.error("sendBookOverDueReminders: " + ex.getMessage());
         }
     }
 }
