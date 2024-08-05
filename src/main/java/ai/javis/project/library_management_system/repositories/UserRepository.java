@@ -21,6 +21,6 @@ public interface UserRepository extends JpaRepository<User,Integer> {
     @Query(value = "SELECT u.id,u.email,u.membership_date,u.name,u.prime_member,u.prime_member_validity FROM users u " +
             "JOIN lending_books lb ON " +
             "u.id = lb.user_id " +
-            "WHERE lb.due_date < today AND lb.return_date IS NULL",nativeQuery = true)
+            "WHERE lb.due_date < :today AND lb.return_date IS NULL",nativeQuery = true)
     Set<User> findUsersWithOverDueBooksTill(LocalDate today);
 }

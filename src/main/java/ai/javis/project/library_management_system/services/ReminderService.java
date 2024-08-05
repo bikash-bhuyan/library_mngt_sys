@@ -58,7 +58,7 @@ public class ReminderService {
         }
     }
 
-    @Scheduled(cron = "0 0 11 * * ?")
+    @Scheduled(cron = "30 52 10 * * ?")
     public void sendBookOverDueReminders(){
         try{
             LocalDate today = LocalDate.now();
